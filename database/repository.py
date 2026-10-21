@@ -85,7 +85,7 @@ def recolher_notebook(notebook_id, professor_id):
     for notebook in notebooks:
         if notebook["id"] == notebook_id:
             notebook["estado"] = "emprestado"
-            notebook["professor"] = professor_id
+            notebook["professor"] = str(professor_id)
             encontrado = True
             break
             

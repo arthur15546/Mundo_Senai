@@ -1,21 +1,31 @@
-from database.repository import notebook_disponivel, emprestado_corretamente, devolver, recolher_notebook as repo_recolher
+
+from database.repository import (
+    notebook_disponivel,
+    emprestado_corretamente,
+    devolver,
+    recolher_notebook as repo_recolher,
+)
+
 
 def devolver_notebook(notebook_id, professor_id):
-    try:
-        disponibilidade = notebook_disponivel(notebook_id)
-        emprestado_corretamente(notebook_id, professor_id)
-    except ValueError as erro:
-        raise ValueError(erro)
+    disponibilidade = notebook_disponivel(notebook_id)
 
-    if disponibilidade == False:
-        devolver(notebook_id)
+    if disponibilidade:
+        raise ValueError(
+            "O notebook não está emprestado, portanto não pode ser devolvido"
+        )
+
+    emprestado_corretamente(notebook_id, professor_id)
+
+    devolver(notebook_id)
 
 
 def recolher_notebook(notebook_id, professor_id):
-    try:
-        disponibilidade = notebook_disponivel(notebook_id)
-    except ValueError as erro:
-        raise ValueError(erro)
+    disponibilidade = notebook_disponivel(notebook_id)
 
-    if disponibilidade == True:
-        repo_recolher(notebook_id, professor_id)
+    if not disponibilidade:
+        raise ValueError(
+            "O notebook não está disponível para recolhimento"
+        )
+
+    repo_recolher(notebook_id, professor_id)
