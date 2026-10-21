@@ -4,7 +4,7 @@ import csv
 PASTA_PROJETO = Path(__file__).resolve().parent.parent
 PASTA_DADOS = PASTA_PROJETO / "database" / "dados"
 
-colunas_notebooks = ["id", "estaado", "professor"]
+colunas_notebooks = ["id", "estado", "professor"]
 
 
 def ler_arquivo(arq):
@@ -16,8 +16,9 @@ def ler_arquivo(arq):
 
 
 def escrever_arquivo(arq, colunas, dados):
-    with open("pessoas_dict.csv", mode="w", newline="", encoding="utf-8") as arquivo:
+    with open(arq, mode="w", newline="", encoding="utf-8") as arquivo:
         escritor = csv.DictWriter(arquivo, fieldnames=colunas)
+        escritor.writeheader()
         escritor.writerows(dados)
 
 
@@ -36,12 +37,12 @@ def identificar_notebook(id):
     for notebook in notebooks:
         if notebook["id"] == id:
             return notebook
-    return False
+    return None
 
 
 def notebook_disponivel(id):
     notebook = identificar_notebook(id)
-    if(notebook == False):
+    if(notebook is None):
         raise ValueError("o notebook não existe")
     else:
         if notebook["estado"] == "disponivel":
@@ -52,14 +53,43 @@ def notebook_disponivel(id):
 
 def emprestado_corretamente(notebook_id, professor_id):
     notebook = identificar_notebook(notebook_id)
+    if notebook is None:
+        raise ValueError("o notebook não existe")
+    
     if notebook["professor"] == professor_id:
         return True
     else:
         raise ValueError("Este notebook não está emprestado para você")
 
-def devolver(id):
-    notebook = identificar_notebook(id)
-    linha = [
-        {"id" : id, "estado" : "disponivel", "professor" : "-"}
-    ]
-    escrever_arquivo(PASTA_DADOS / "notebooks", colunas_notebooks, linha)
+def devolver(notebook_id):
+    notebooks = ler_arquivo(PASTA_DADOS / "notebooks.csv")
+    
+    encontrado = False
+    for notebook in notebooks:
+        if notebook["id"] == notebook_id:
+            notebook["estado"] = "disponivel"
+            notebook["professor"] = "-"
+            encontrado = True
+            break
+            
+    if not encontrado:
+        raise ValueError("o notebook não existe")
+
+    escrever_arquivo(PASTA_DADOS / "notebooks.csv", colunas_notebooks, notebooks)
+
+
+def recolher_notebook(notebook_id, professor_id):
+    notebooks = ler_arquivo(PASTA_DADOS / "notebooks.csv")
+
+    encontrado = False
+    for notebook in notebooks:
+        if notebook["id"] == notebook_id:
+            notebook["estado"] = "emprestado"
+            notebook["professor"] = professor_id
+            encontrado = True
+            break
+            
+    if not encontrado:
+        raise ValueError("o notebook não existe")
+
+    escrever_arquivo(PASTA_DADOS / "notebooks.csv", colunas_notebooks, notebooks)
