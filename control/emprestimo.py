@@ -1,4 +1,5 @@
 from database.repository import notebook_disponivel, emprestado_corretamente, devolver, recolher_notebook as repo_recolher
+
 def devolver_notebook(notebook_id, professor_id):
     try:
         disponibilidade = notebook_disponivel(notebook_id)

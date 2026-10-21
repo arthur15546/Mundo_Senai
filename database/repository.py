@@ -56,7 +56,7 @@ def emprestado_corretamente(notebook_id, professor_id):
     if notebook is None:
         raise ValueError("o notebook não existe")
     
-    if notebook["professor"] == professor_id:
+    if notebook["professor"] == str(professor_id):
         return True
     else:
         raise ValueError("Este notebook não está emprestado para você")
