@@ -1,0 +1,14 @@
+.venv
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+control/__pycache__/__init__.cpython-315.pyc
+control/__pycache__/autenticacao.cpython-315.pyc
+control/__pycache__/emprestimo.cpython-315.pyc
+database/__pycache__/__init__.cpython-315.pyc
+database/__pycache__/repository.cpython-315.pyc
+view/__pycache__/view_login.cpython-315.pyc
+view/__pycache__/view_monitor.cpython-315.pyc
+view/__pycache__/view_professor.cpython-315.pyc
