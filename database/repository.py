@@ -93,3 +93,8 @@ def recolher_notebook(notebook_id, professor_id):
         raise ValueError("o notebook não existe")
 
     escrever_arquivo(PASTA_DADOS / "notebooks.csv", colunas_notebooks, notebooks)
+
+def dentro_do_limite(professor_id):
+    notebooks = ler_arquivo(PASTA_DADOS / "notebooks.csv")
+    notebooks_emprestados = [n for n in notebooks if n["professor"] == str(professor_id)]
+    return len(notebooks_emprestados) < 3

@@ -4,6 +4,7 @@ from database.repository import (
     emprestado_corretamente,
     devolver,
     recolher_notebook as repo_recolher,
+    dentro_do_limite
 )
 
 
@@ -27,5 +28,8 @@ def recolher_notebook(notebook_id, professor_id):
         raise ValueError(
             "O notebook não está disponível para recolhimento"
         )
-
+    if not dentro_do_limite(professor_id):
+        raise ValueError(
+            "Você atingiu o limite de notebooks emprestados (3). Devolva um notebook antes de recolher outro."
+        )
     repo_recolher(notebook_id, professor_id)
