@@ -8,6 +8,14 @@ def pagina_professor():
         page_title="Mundo Senai",
         page_icon=":computer:",)
 
+    with st.sidebar:
+        st.write(f"Logado como: **{st.session_state.get('professor_nome', 'Usuário')}**")
+        if st.button("Sair", type="primary"):
+            st.session_state.funcao = None
+            st.session_state.pop("professor_id", None)
+            st.session_state.pop("professor_nome", None)
+            st.rerun()
+
     professor_id = st.session_state.professor_id
     professor_nome = st.session_state.professor_nome
 

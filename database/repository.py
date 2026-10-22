@@ -55,8 +55,13 @@ def emprestado_corretamente(notebook_id, professor_id):
     notebook = identificar_notebook(notebook_id)
     if notebook is None:
         raise ValueError("o notebook não existe")
+    professores = ler_arquivo(PASTA_DADOS / "usuarios.csv")
+    professor = next((p for p in professores if p["id"] == str(professor_id)), None)
     
-    if notebook["professor"] == str(professor_id):
+    if professor is None:
+        raise ValueError("Professor não encontrado")
+
+    if notebook["professor"] == str(professor_id) or professor["funcao"] == "monitor":
         return True
     else:
         raise ValueError("Este notebook não está emprestado para você")
@@ -95,6 +100,21 @@ def recolher_notebook(notebook_id, professor_id):
     escrever_arquivo(PASTA_DADOS / "notebooks.csv", colunas_notebooks, notebooks)
 
 def dentro_do_limite(professor_id):
+    limite = 3
+    professores = ler_arquivo(PASTA_DADOS / "usuarios.csv")
+    professor = next((p for p in professores if p["id"] == str(professor_id)), None)
+    if professor is None:
+        raise ValueError("Professor não encontrado")
+    if professor["funcao"] == "monitor":
+        limite = 1000
+
     notebooks = ler_arquivo(PASTA_DADOS / "notebooks.csv")
     notebooks_emprestados = [n for n in notebooks if n["professor"] == str(professor_id)]
-    return len(notebooks_emprestados) < 3
+    
+    return len(notebooks_emprestados) < limite
+
+def listar_notebooks_emprestados():
+    notebooks = ler_arquivo(PASTA_DADOS / "notebooks.csv")
+    emprestados = [n for n in notebooks if n["estado"] == "emprestado"]
+    emprestados = sorted(emprestados, key=lambda x: x["id"])
+    return emprestados
