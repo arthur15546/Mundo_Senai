@@ -5,6 +5,6 @@
 ## Descrição do código:
 ### O sistema foi desenvolvido em Python com o objetivo de facilitar o gerenciamento da retirada e devolução de notebooks no ambiente escolar. A aplicação utiliza a leitura de códigos de barras para identificar os notebooks e os professores ou monitores responsáveis pela retirada dos equipamentos.
 
-O código está organizado em três módulos principais: control, responsável pela lógica e pelo controle das operações; database, destinado ao gerenciamento do banco de dados; e view, responsável pela interface visual do sistema. O arquivo app.py atua como ponto de entrada da aplicação, enquanto o requirements.txt lista as dependências necessárias para sua execução.
+###O código está organizado em três módulos principais: **control**, responsável pela lógica e pelo controle das operações; **database**, destinado ao gerenciamento do banco de dados; e **view**, responsável pela interface visual do sistema. O arquivo app.py atua como ponto de entrada da aplicação, enquanto o requirements.txt lista as dependências necessárias para sua execução.
 
-Dessa forma, o sistema busca tornar o processo de empréstimo de notebooks mais rápido, organizado e eficiente, facilitando o controle dos equipamentos disponíveis e de suas movimentações.
+###Dessa forma, o sistema busca tornar o processo de empréstimo de notebooks mais rápido, organizado e eficiente, facilitando o controle dos equipamentos disponíveis e de suas movimentações.
