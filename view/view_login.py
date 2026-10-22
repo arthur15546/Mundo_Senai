@@ -33,6 +33,6 @@ def pagina_login():
                 st.rerun()
 
             else:
-                st.session_state.limpar_cracha = True
                 st.error("Usuário não encontrado")
+                st.session_state.limpar_cracha = True
                 st.rerun()
