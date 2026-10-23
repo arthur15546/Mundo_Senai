@@ -2,7 +2,7 @@ id,nome,cracha,funcao
 0,Larissa,35268,professor
 1,Japa,46084,monitor
 2,Ingrid,310764,professor
-3,MariaClaudia,x,professor
+3,Maria Claudia,x,professor
 4,Mayara,307466,professor
 5,Gabriel,309154,professor
 6,Pedro,309144,professor
@@ -15,3 +15,5 @@ id,nome,cracha,funcao
 13,Larissa,309748,professor
 14,Pedro,309682,professor
 15,Paula,288608,monitor
+16,Amanda,309210,monitor
+
