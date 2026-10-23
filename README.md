@@ -1,7 +1,7 @@
 # Sistema de notebooks
 ### Um sistema prático para organizar a retirada e devolução de notebooks
 ## Licença:
-### Este projeto está licenciado sob os termos da **Licença MIT**. Consulte o arquivo [LICENSE.md](LICENCA.md) para mais detalhes.
+### Este projeto está licenciado sob os termos da **Licença MIT**. Consulte o arquivo [LICENSE.md](LICENÇA.md) para mais detalhes.
 ### Copyright (c) [2026] [Arthur Maciel de Oliveira, Bernardo Cichy Kamianecky, Daiana da Silva Machado, Davi Paim Antunes, Gabriel Marques Garzão, Kadu de Melo Gonçalves, Manoela Machado Vargas e Victor Machado Mendes]
 ## Objetivo:
 ### Nosso sistema resolve o problema que é a dificuldade de gerenciamento e a falta de praticidade ao retirar e devolver notebooks. Para solucionar utilizamos um sistema que envolve um scanner no qual lê um código de barras que estará colado em cada notebook e no crachá de professores e monitores. Cada código de barras será diferente, dando uma identidade no site para cada usuário e item. Contudo, o principal objetivo é facilitar a retirada de notebooks realizada pelos professores e monitores, diminuindo o tempo perdido de aula para tal ação.
