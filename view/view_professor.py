@@ -50,7 +50,6 @@ def pagina_professor():
                 try:
                     recolher_notebook(notebook, professor_id)
                     st.session_state.limpar_notebook = True
-                    st.success("Notebook recolhido com sucesso!")
                     st.rerun()
 
                 except ValueError as erro:
