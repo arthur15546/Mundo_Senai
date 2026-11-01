@@ -106,7 +106,7 @@ def dentro_do_limite(professor_id):
     if professor is None:
         raise ValueError("Professor não encontrado")
     if professor["funcao"] == "monitor":
-        limite = 1000
+        return True
 
     notebooks = ler_arquivo(PASTA_DADOS / "notebooks.csv")
     notebooks_emprestados = [n for n in notebooks if n["professor"] == str(professor_id)]
