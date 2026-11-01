@@ -33,3 +33,22 @@ def recolher_notebook(notebook_id, professor_id):
             "Você atingiu o limite de notebooks emprestados (3). Devolva um notebook antes de recolher outro."
         )
     repo_recolher(notebook_id, professor_id)
+
+def validar_emprestimo(notebook_id, professor_id):
+    disponibilidade = notebook_disponivel(notebook_id)
+
+    if not disponibilidade:
+        raise ValueError(
+            "O notebook não está disponível para recolhimento"
+        )
+
+def validar_devolucao(notebook_id, professor_id):
+    disponibilidade = notebook_disponivel(notebook_id)
+
+    if disponibilidade:
+        raise ValueError(
+            "O notebook não está emprestado, portanto não pode ser devolvido"
+        )
+
+    emprestado_corretamente(notebook_id, professor_id)
+    
