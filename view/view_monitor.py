@@ -6,6 +6,7 @@ from control.emprestimo import (
     validar_emprestimo,
 )
 from database.repository import listar_notebooks_emprestados
+from database.historico import ler_historico, apagar_historico
 
 
 def pagina_monitor():
@@ -17,9 +18,19 @@ def pagina_monitor():
     with st.sidebar:
         st.write(f"Logado como: **{st.session_state.get('professor_nome', 'Usuário')}**")
         if st.button("Sair", type="primary"):
-            st.session_state.funcao = None
-            st.session_state.pop("professor_id", None)
-            st.session_state.pop("professor_nome", None)
+            st.session_state.clear()
+            st.rerun()
+
+        
+        if st.download_button(
+            label="Baixar histórico",
+            data="\n".join([",".join(h.values()) for h in ler_historico()]),
+            file_name="historico_diario.csv",
+            mime="text/csv"):
+            pass
+
+        if st.button("Apagar histórico", type="primary"):
+            apagar_historico()
             st.rerun()
 
     professor_id = st.session_state.professor_id
@@ -54,6 +65,17 @@ def pagina_monitor():
             )
         else:
             st.info("Nenhum notebook emprestado no momento.")
+
+        st.subheader("Histórico de Ações")
+        historico = ler_historico()
+        if historico:
+            st.dataframe(
+                historico,
+                use_container_width=True,
+                hide_index=True
+            )
+        else:
+            st.info("Nenhuma ação registrada no histórico.")
 
     with col2:
         st.subheader("Gerenciar notebooks")

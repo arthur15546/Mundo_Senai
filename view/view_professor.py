@@ -16,9 +16,7 @@ def pagina_professor():
     with st.sidebar:
         st.write(f"Logado como: **{st.session_state.get('professor_nome', 'Usuário')}**")
         if st.button("Sair", type="primary"):
-            st.session_state.funcao = None
-            st.session_state.pop("professor_id", None)
-            st.session_state.pop("professor_nome", None)
+            st.session_state.clear()
             st.rerun()
 
     professor_id = st.session_state.professor_id
