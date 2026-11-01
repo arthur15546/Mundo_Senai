@@ -6,6 +6,7 @@ from database.repository import (
     recolher_notebook as repo_recolher,
     dentro_do_limite
 )
+from database.historico import registrar_historico
 
 
 def devolver_notebook(notebook_id, professor_id):
@@ -18,7 +19,8 @@ def devolver_notebook(notebook_id, professor_id):
 
     emprestado_corretamente(notebook_id, professor_id)
 
-    devolver(notebook_id)
+    devolver(notebook_id, professor_id)
+    registrar_historico(notebook_id, professor_id, "devolucao")
 
 
 def recolher_notebook(notebook_id, professor_id):
@@ -33,6 +35,7 @@ def recolher_notebook(notebook_id, professor_id):
             "Você atingiu o limite de notebooks emprestados (3). Devolva um notebook antes de recolher outro."
         )
     repo_recolher(notebook_id, professor_id)
+    registrar_historico(notebook_id, professor_id, "recolhimento")
 
 def validar_emprestimo(notebook_id, professor_id):
     disponibilidade = notebook_disponivel(notebook_id)

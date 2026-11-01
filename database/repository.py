@@ -1,25 +1,29 @@
 from pathlib import Path
 import csv
+from threading import RLock
 
 PASTA_PROJETO = Path(__file__).resolve().parent.parent
 PASTA_DADOS = PASTA_PROJETO / "database" / "dados"
 
 colunas_notebooks = ["id", "estado", "professor"]
+_LOCK_DADOS = RLock()
 
 
 def ler_arquivo(arq):
-    with open(arq, "r", newline="", encoding="utf-8") as arquivo:
-        leitor = csv.DictReader(arquivo)
-        usuarios = list(leitor)
+    with _LOCK_DADOS:
+        with open(arq, "r", newline="", encoding="utf-8") as arquivo:
+            leitor = csv.DictReader(arquivo)
+            usuarios = list(leitor)
 
     return usuarios
 
 
 def escrever_arquivo(arq, colunas, dados):
-    with open(arq, mode="w", newline="", encoding="utf-8") as arquivo:
-        escritor = csv.DictWriter(arquivo, fieldnames=colunas)
-        escritor.writeheader()
-        escritor.writerows(dados)
+    with _LOCK_DADOS:
+        with open(arq, mode="w", newline="", encoding="utf-8") as arquivo:
+            escritor = csv.DictWriter(arquivo, fieldnames=colunas)
+            escritor.writeheader()
+            escritor.writerows(dados)
 
 
 def encontrar_usuario(cracha):
@@ -66,38 +70,79 @@ def emprestado_corretamente(notebook_id, professor_id):
     else:
         raise ValueError("Este notebook não está emprestado para você")
 
-def devolver(notebook_id):
-    notebooks = ler_arquivo(PASTA_DADOS / "notebooks.csv")
-    
-    encontrado = False
-    for notebook in notebooks:
-        if notebook["id"] == notebook_id:
-            notebook["estado"] = "disponivel"
-            notebook["professor"] = "-"
-            encontrado = True
-            break
-            
-    if not encontrado:
-        raise ValueError("o notebook não existe")
+def devolver(notebook_id, professor_id):
+    with _LOCK_DADOS:
+        notebooks = ler_arquivo(PASTA_DADOS / "notebooks.csv")
+        notebook_encontrado = next(
+            (notebook for notebook in notebooks if notebook["id"] == notebook_id),
+            None,
+        )
 
-    escrever_arquivo(PASTA_DADOS / "notebooks.csv", colunas_notebooks, notebooks)
+        if notebook_encontrado is None:
+            raise ValueError("o notebook não existe")
+        if notebook_encontrado["estado"] != "emprestado":
+            raise ValueError("O notebook não está emprestado")
+
+        professor = next(
+            (
+                usuario
+                for usuario in ler_arquivo(PASTA_DADOS / "usuarios.csv")
+                if usuario["id"] == str(professor_id)
+            ),
+            None,
+        )
+        if professor is None:
+            raise ValueError("Professor não encontrado")
+        if (
+            professor["funcao"] != "monitor"
+            and notebook_encontrado["professor"] != str(professor_id)
+        ):
+            raise ValueError("Este notebook não está emprestado para você")
+
+        notebook_encontrado["estado"] = "disponivel"
+        notebook_encontrado["professor"] = "-"
+        escrever_arquivo(PASTA_DADOS / "notebooks.csv", colunas_notebooks, notebooks)
 
 
 def recolher_notebook(notebook_id, professor_id):
-    notebooks = ler_arquivo(PASTA_DADOS / "notebooks.csv")
+    with _LOCK_DADOS:
+        notebooks = ler_arquivo(PASTA_DADOS / "notebooks.csv")
+        notebook_encontrado = next(
+            (notebook for notebook in notebooks if notebook["id"] == notebook_id),
+            None,
+        )
 
-    encontrado = False
-    for notebook in notebooks:
-        if notebook["id"] == notebook_id:
-            notebook["estado"] = "emprestado"
-            notebook["professor"] = str(professor_id)
-            encontrado = True
-            break
-            
-    if not encontrado:
-        raise ValueError("o notebook não existe")
+        if notebook_encontrado is None:
+            raise ValueError("o notebook não existe")
+        if notebook_encontrado["estado"] != "disponivel":
+            raise ValueError("O notebook não está disponível para recolhimento")
 
-    escrever_arquivo(PASTA_DADOS / "notebooks.csv", colunas_notebooks, notebooks)
+        professor = next(
+            (
+                usuario
+                for usuario in ler_arquivo(PASTA_DADOS / "usuarios.csv")
+                if usuario["id"] == str(professor_id)
+            ),
+            None,
+        )
+        if professor is None:
+            raise ValueError("Professor não encontrado")
+        if professor["funcao"] != "monitor":
+            emprestados = sum(
+                1
+                for notebook in notebooks
+                if notebook["estado"] == "emprestado"
+                and notebook["professor"] == str(professor_id)
+            )
+            if emprestados >= 3:
+                raise ValueError(
+                    "Você atingiu o limite de notebooks emprestados (3). "
+                    "Devolva um notebook antes de recolher outro."
+                )
+
+        notebook_encontrado["estado"] = "emprestado"
+        notebook_encontrado["professor"] = str(professor_id)
+        escrever_arquivo(PASTA_DADOS / "notebooks.csv", colunas_notebooks, notebooks)
 
 def dentro_do_limite(professor_id):
     limite = 3

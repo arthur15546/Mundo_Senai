@@ -24,9 +24,13 @@ def pagina_login():
             usuario = autenticacao(cracha)
 
             if usuario is not None:
-                st.session_state.funcao = (
-                    1 if usuario["funcao"] == "professor" else 2
-                )
+                funcoes = {"professor": 1, "monitor": 2}
+                funcao = funcoes.get(usuario["funcao"])
+                if funcao is None:
+                    st.error("Perfil de usuário inválido")
+                    return
+
+                st.session_state.funcao = funcao
 
                 st.session_state.professor_id = usuario["id"]
                 st.session_state.professor_nome = usuario["nome"]
