@@ -163,3 +163,14 @@ def listar_notebooks_emprestados():
     emprestados = [n for n in notebooks if n["estado"] == "emprestado"]
     emprestados = sorted(emprestados, key=lambda x: x["id"])
     return emprestados
+
+
+def identificar_usuario(id):
+    usuarios = ler_arquivo(PASTA_DADOS / "usuarios.csv")
+    usuario_idendificado = next(
+        (u for u in usuarios if u["id"] == str(id)),
+        None
+    )
+    if usuario_idendificado is None:
+        raise ValueError("Usuário não encontrado")
+    return usuario_idendificado

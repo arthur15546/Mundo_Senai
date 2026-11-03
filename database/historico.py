@@ -2,6 +2,7 @@ from pathlib import Path
 import csv
 import time
 from threading import Lock
+from database.repository import identificar_usuario
 
 PASTA_PROJETO = Path(__file__).resolve().parent.parent
 PASTA_DADOS = PASTA_PROJETO / "database" / "dados"
@@ -45,10 +46,12 @@ def registrar_historico(notebook, professor_id, acao):
     with _LOCK_HISTORICO:
         novo_id = _proximo_id()
         horario = time.strftime("%X")
+        professor = identificar_usuario(professor_id)
+        nome_professor = professor["nome"]
 
         with open(ARQUIVO_HISTORICO, "a", newline="", encoding="utf-8") as arquivo:
             escritor = csv.writer(arquivo)
-            escritor.writerow([novo_id, horario, notebook, professor_id, acao])
+            escritor.writerow([novo_id, horario, notebook, nome_professor, acao])
 
 
 def ler_historico():
