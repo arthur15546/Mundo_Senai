@@ -11,3 +11,5 @@
 ### O código está organizado em três módulos principais: **control**, responsável pela lógica e pelo controle das operações; **database**, destinado ao gerenciamento do banco de dados; e **view**, responsável pela interface visual do sistema. O arquivo app.py atua como ponto de entrada da aplicação, enquanto o requirements.txt lista as dependências necessárias para sua execução.
 
 ### Dessa forma, o sistema busca tornar o processo de empréstimo de notebooks mais rápido, organizado e eficiente, facilitando o controle dos equipamentos disponíveis e de suas movimentações.
+
+[Sistema de notebooks Demo web](https://mundosenai.streamlit.app/)
