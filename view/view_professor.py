@@ -106,22 +106,6 @@ def pagina_professor():
         st.write("Notebooks selecionados para devolução:")
         st.write(", ".join(st.session_state.notebooks_listados))
 
-    if st.button("Devolver notebooks", key="confirmar_devolucao"):
-        devolucao_concluida = True
-        for notebook in st.session_state.notebooks_listados.copy():
-            try:
-                devolver_notebook(notebook, professor_id)
-            except ValueError as error:
-                st.error(f"Erro ao devolver notebook {notebook}: {error}")
-                devolucao_concluida = False
-                break
-
-            st.session_state.notebooks_listados.remove(notebook)
-
-        if devolucao_concluida:
-            st.session_state.notebook_processar = ""
-            st.success("Notebooks devolvidos com sucesso!")
-
     
     if notebook_recolhimento:
         if acao_recolhimento == "Escolher":
@@ -148,19 +132,40 @@ def pagina_professor():
         st.write("Notebooks selecionados para recolhimento:")
         st.write(", ".join(st.session_state.notebooks_recolher))
 
-    if st.button("Recolher notebooks"):
-        recolhimento_concluido = True
-        for notebook in st.session_state.notebooks_recolher.copy():
-            try:
-                recolher_notebook(notebook, professor_id)
-            except ValueError as error:
-                st.error(f"Erro ao recolher notebook {notebook}: {error}")
-                recolhimento_concluido = False
-                break
+    if acao_notebook == "Recolher notebook" and st.session_state.notebooks_recolher:
+        st.session_state.notebooks_listados = []
+        if st.button("Recolher notebooks"):
+            recolhimento_concluido = True
+            for notebook in st.session_state.notebooks_recolher.copy():
+                try:
+                    recolher_notebook(notebook, professor_id)
+                except ValueError as error:
+                    st.error(f"Erro ao recolher notebook {notebook}: {error}")
+                    recolhimento_concluido = False
+                    break
 
-            st.session_state.notebooks_recolher.remove(notebook)
+                st.session_state.notebooks_recolher.remove(notebook)
 
-        if recolhimento_concluido:
-            st.session_state.notebook_processar = ""
-            st.success("Notebooks recolhidos com sucesso!")
-            st.rerun()
+            if recolhimento_concluido:
+                st.session_state.notebook_processar = ""
+                st.success("Notebooks recolhidos com sucesso!")
+                st.rerun()
+
+    elif acao_notebook == "Devolver notebook":
+        st.session_state.notebooks_recolher = []
+
+        if st.button("Devolver notebooks", key="confirmar_devolucao"):
+                devolucao_concluida = True
+                for notebook in st.session_state.notebooks_listados.copy():
+                    try:
+                        devolver_notebook(notebook, professor_id)
+                    except ValueError as error:
+                        st.error(f"Erro ao devolver notebook {notebook}: {error}")
+                        devolucao_concluida = False
+                        break
+        
+                    st.session_state.notebooks_listados.remove(notebook)
+        
+                if devolucao_concluida:
+                    st.session_state.notebook_processar = ""
+                    st.success("Notebooks devolvidos com sucesso!")
