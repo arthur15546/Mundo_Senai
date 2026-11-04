@@ -14,7 +14,10 @@ def pagina_professor():
 
     st.markdown("""
         <style>
-            
+            .stTextInput {
+                width: 50%;
+                margin: 0 auto;
+            }
         </style>
 
     """, unsafe_allow_html=True)
